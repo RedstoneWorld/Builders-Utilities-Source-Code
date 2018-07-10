@@ -15,3 +15,134 @@ disable-leaves-decay: true
 fix-attackspeed: true
 
 prevent-dragon-egg-teleport: true
+
+heads:
+  randomise:
+    banner: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzk3OTU1NDYyZTRlNTc2NjY0NDk5YWM0YTFjNTcyZjYxNDNmMTlhZDJkNjE5NDc3NjE5OGY4ZDEzNmZkYjIifX19"
+    red:    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTEzMWRlOGU5NTFmZGQ3YjlhM2QyMzlkN2NjM2FhM2U4NjU1YTMzNmI5OTliOWVkYmI0ZmIzMjljYmQ4NyJ9fX0="
+    green:  "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWMzY2VjNjg3NjlmZTljOTcxMjkxZWRiN2VmOTZhNGUzYjYwNDYyY2ZkNWZiNWJhYTFjYmIzYTcxNTEzZTdiIn19fQ=="
+    blue:   "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjMyOGYzNzhmMjhhOTg3MjIyNmY1Y2UwNGQ2ZTFkZmExMTE2MTg1ODdmNDhkZmExZmU4MmQwNDMyMTZhNWNmIn19fQ=="
+  colors:
+    red:    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2Y0NmMzMWQ2ZWU2ZWE2MTlmNzJlNzg1MjMyY2IwNDhhYjI3MDQ2MmRiMGNiMTQ1NDUxNDQzNjI1MWMxYSJ9fX0="
+    green:  "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZmNjlmN2I3NTM4YjQxZGMzNDM5ZjM2NThhYmJkNTlmYWNjYTM2NmYxOTBiY2YxZDZkMGEwMjZjOGY5NiJ9fX0="
+    blue:   "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjgzOWUzODFkOWZlZGFiNmY4YjU5Mzk2YTI3NjQyMzhkY2ViMmY3ZWVhODU2ZGM2ZmM0NDc2N2RhMzgyZjEifX19"
+
+messages:
+  prefix: "&3buildersUtil> &b"
+  no-permission: "You are not allowed to run this command"
+  command:
+    result: "%prefix% %option% %status%"
+    usage: "%prefix% &c%usage%"
+    option:
+      iron-trapdoor: "Iron Trapdoor Interaction"
+      slab-breaking: "Custom Slab Breaking"
+      terracotta-rotating: "Glazed Terracotta Rotating"
+      night-vision: "Nightvision"
+      no-clip: "NoClip"
+      advanced-fly: "Adnvanced Fly"
+    status:
+      enabled: "&aEnabled"
+      disabled: "&cDisabled"
+  toggle:
+    title: "&1Builders Utilities"
+    click: |-
+      &6%option%
+      %status%
+
+      &7Click to toggle
+    not-supported: |-
+      &6%option%
+      &c&l1.12+ only
+    no-permission: |-
+      &6%option%
+      &c&lNo permission
+    status:
+      enabled: "&a&lEnabled"
+      disabled: "&c&lDisabled"
+    option:
+      iron-trapdoor: "Iron Trapdoor Interaction"
+      slab-breaking: "Custom Slab Breaking"
+      terracotta-rotating: "Glazed Terracotta Rotating"
+      night-vision: "Nightvision"
+      no-clip: "NoClip"
+      advanced-fly: "Adnvanced Fly"
+  banner:
+    close: "&cClick to close"
+    select: |-
+      &3%what%
+      &7
+      &7click to select
+    randomise: "&7Click to randomise"
+    title:
+      base-color: "&1Select a base color"
+      color: "&1Select a color"
+      pattern: "&1Select a pattern"
+    get-banner: "&aClick to get the banner"
+  armor-color:
+    title: "&1Armor Color Creator"
+    randomise: "&7Click to randomise"
+    helmet: "&aClick to get helmet"
+    chestplate: "&aClick to get chestplate"
+    leggings: "&aClick to get leggings"
+    boots:  "&aClick to get boots"
+    color: |-
+      %color%
+
+      &7Left click to increase
+      &7Right click to decrease
+      &7Shift click to change by 5
+  secret-blocks:
+    title: "&1Secret Blocks"
+
+    mushrrom1: "&3Brown Mushroom Block"
+    mushroom2: "&3Red Mushroom Block"
+    mushroom-block: |-
+      &3Mushroom Block
+      &7&lID&7 99:0
+    mushroom-stem: |-
+      &3Mushroom Stem
+      &7&lID&7 99:10
+    mushroom-fullstem: |-
+      &3Mushroom Full Stem
+      &7&lID&7 99:15
+
+    double-stone-slab: |-
+      &3Double Stone Slab
+      &7&lID&7 43:0
+    smooth-stone: |-
+      &3Smooth Stone
+      &7&lID&7 43:8
+    smooth-sandstone: |-
+      &3Smooth Sandstone
+      &7&lID&7 43:9
+    smooth-red-sandstone: |-
+      &3Smooth Red Sandstone
+      &7&lID&7 181:8
+
+    full-bark-oak: |-
+      &3Full Bark Oak
+      &7&lID&7 17:12
+    full-bark-spruce: |-
+      &3Full Bark Spruce
+      &7&lID&7 17:13
+    full-bark-birch: |-
+      &3Full Bark Birch
+      &7&lID&7 17:14
+    full-bark-jungle: |-
+      &3Full Bark Jungle
+      &7&lID&7 17:15
+    full-bark-acacia: |-
+      &3Full Bark Acacia
+      &7&lID&7 162:12
+    full-bark-dark-oak: |-
+      &3Full Bark Dark Oak
+      &7&lID&7 162:13
+
+    mob-spawner: "&3Spawner Cage"
+    barrier: "&3Barrier"
+    dragon-egg: "&3Dragon Egg"
+    grass-path: "&3Grass Path"
+    end-gateway: |-
+      &3End Gateway
+      &7&lID&7 209:0
+

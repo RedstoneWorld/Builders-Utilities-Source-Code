@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public class SecretBlockHandler implements Listener, CommandExecutor {
-    public static Main plugin;
+    public final Main plugin;
 
     public SecretBlockHandler(Main main) {
         plugin = main;
@@ -18,13 +18,14 @@ public class SecretBlockHandler implements Listener, CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
+            sender.sendMessage("Can only be run by a player!");
             return false;
         }
         Player p = (Player) sender;
         if (p.hasPermission("builders.util.secretblocks")) {
-            SecretBlockGUI g = new SecretBlockGUI();
-            p.openInventory(g.generateStartInv());
-            return true;
+            p.openInventory(plugin.getSecretBlockGui().generateStartInv());
+        } else {
+            sender.sendMessage(plugin.getText("no-permission"));
         }
         return false;
     }

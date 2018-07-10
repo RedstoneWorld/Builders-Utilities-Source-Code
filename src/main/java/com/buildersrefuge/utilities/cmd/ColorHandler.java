@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public class ColorHandler implements Listener, CommandExecutor {
-    public static Main plugin;
+    public final Main plugin;
 
     public ColorHandler(Main main) {
         plugin = main;
@@ -17,16 +17,17 @@ public class ColorHandler implements Listener, CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-            if (!(sender instanceof Player)) {
-                return false;
-            }
-            Player p = (Player) sender;
-            if (p.hasPermission("builders.util.color")) {
-                ColorGUI g = new ColorGUI();
-                p.openInventory(g.generateInv());
-                return true;
-            }
-        return false;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Can only be run by a player!");
+            return false;
+        }
+        Player p = (Player) sender;
+        if (p.hasPermission("builders.util.color")) {
+            p.openInventory(plugin.getColorGui().generateInv());
+        } else {
+            sender.sendMessage(plugin.getText("no-permission"));
+        }
+        return true;
     }
 
 }

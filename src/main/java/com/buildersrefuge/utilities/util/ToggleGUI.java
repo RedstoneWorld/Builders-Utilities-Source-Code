@@ -1,7 +1,7 @@
 package com.buildersrefuge.utilities.util;
 
 import com.buildersrefuge.utilities.Main;
-import com.buildersrefuge.utilities.object.NoClipManager;
+import com.buildersrefuge.utilities.managers.ToggleOption;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,11 +10,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 public class ToggleGUI {
+    private final Main plugin;
+    private final ItemStack RED_GLASS_PANE;
+    private final ItemStack GREEN_GLASS_PANE;
+    private final ItemStack ORANGE_GLASS_PANE;
+
+    public ToggleGUI(Main main) {
+        plugin = main;
+        GREEN_GLASS_PANE = Items.create(Material.STAINED_GLASS_PANE, (short) 5, 1, "&7");
+        ORANGE_GLASS_PANE = Items.create(Material.STAINED_GLASS_PANE, (short) 1, 1, "&7");
+        RED_GLASS_PANE = Items.create(Material.STAINED_GLASS_PANE, (short) 14, 1, "&7");
+    }
 
     public Inventory generateInv(Player p) {
-        Items i = new Items();
-        Inventory inv = Bukkit.createInventory(null, 27, "§1Builders Utilities");
-        ItemStack GRAY_GLASS_PANE = i.create(Material.STAINED_GLASS_PANE, (short) 8, 1, "&7", "");
+        Inventory inv = Bukkit.createInventory(null, 27, plugin.getText("toggle.title"));
+        ItemStack GRAY_GLASS_PANE = Items.create(Material.STAINED_GLASS_PANE, (short) 8, 1, "&7");
         for (int x = 0; x < 27; x++) {
             inv.setItem(x, GRAY_GLASS_PANE);
         }
@@ -23,90 +33,48 @@ public class ToggleGUI {
     }
 
     public void updateInv(Inventory inv, Player p) {
-        Items i = new Items();
-        ItemStack GREEN_GLASS_PANE = i.create(Material.STAINED_GLASS_PANE, (short) 5, 1, "&7", "");
-        ItemStack ORANGE_GLASS_PANE = i.create(Material.STAINED_GLASS_PANE, (short) 1, 1, "&7", "");
-        ItemStack RED_GLASS_PANE = i.create(Material.STAINED_GLASS_PANE, (short) 14, 1, "&7", "");
-        if (!Main.ironTrapdoorNames.contains(p.getName())) {
-            inv.setItem(1, GREEN_GLASS_PANE);
-            inv.setItem(10, i.create(Material.IRON_TRAPDOOR, (short) 0, 1, "&6Iron Trapdoor Interaction", "&a&lEnabled__&7__&7Click to toggle"));
-            inv.setItem(19, GREEN_GLASS_PANE);
-        } else {
-            inv.setItem(1, RED_GLASS_PANE);
-            inv.setItem(10, i.create(Material.IRON_TRAPDOOR, (short) 0, 1, "&6Iron Trapdoor Interaction", "&c&lDisabled__&7__&7Click to toggle"));
-            inv.setItem(19, RED_GLASS_PANE);
-        }
-        if (!Main.slabNames.contains(p.getName())) {
-            inv.setItem(2, GREEN_GLASS_PANE);
-            inv.setItem(11, i.create(Material.STEP, (short) 0, 1, "&6Custom Slab Breaking", "&a&lEnabled__&7__&7Click to toggle"));
-            inv.setItem(20, GREEN_GLASS_PANE);
-        } else {
-            inv.setItem(2, RED_GLASS_PANE);
-            inv.setItem(11, i.create(Material.STEP, (short) 0, 1, "&6Custom Slab Breaking", "&c&lDisabled__&7__&7Click to toggle"));
-            inv.setItem(20, RED_GLASS_PANE);
-        }
+        setToggleItem(inv, 1, Material.IRON_TRAPDOOR, "iron-trapdoor", !plugin.getToggleManager().hasToggled(p, ToggleOption.IRON_TRAPDOOR_DISABLED));
+
+        setToggleItem(inv, 2, Material.STEP, "slab-breaking", !plugin.getToggleManager().hasToggled(p, ToggleOption.SLAB_BREAKING_DISABLED));
+
         if (Main.version.contains("v1_12")) {
-            if (Main.terracottaNames.contains(p.getName())) {
-                inv.setItem(3, GREEN_GLASS_PANE);
-                inv.setItem(12, i.create(Material.ORANGE_GLAZED_TERRACOTTA, (short) 0, 1, "&6Glazed Terracotta Rotating", "&a&lEnabled__&7__&7Click to toggle"));
-                inv.setItem(21, GREEN_GLASS_PANE);
-            } else {
-                inv.setItem(3, RED_GLASS_PANE);
-                inv.setItem(12, i.create(Material.ORANGE_GLAZED_TERRACOTTA, (short) 0, 1, "&6Glazed Terracotta Rotating", "&c&lDisabled__&7__&7Click to toggle"));
-                inv.setItem(21, RED_GLASS_PANE);
-            }
+            setToggleItem(inv, 3, Material.ORANGE_GLAZED_TERRACOTTA, "terracotta-rotating", plugin.getToggleManager().hasToggled(p, ToggleOption.TERRACOTTA_ROTATING));
         } else {
-            inv.setItem(3, ORANGE_GLASS_PANE);
-            inv.setItem(12, i.create(Material.STAINED_GLASS, (short) 1, 1, "&6Glazed Terracotta Rotating", "&c&l1.12+ only"));
-            inv.setItem(21, ORANGE_GLASS_PANE);
+            setItem(inv, 3, Material.STAINED_GLASS, ORANGE_GLASS_PANE, "not-supported", "terracotta-rotating", false);
         }
 
         if (p.hasPermission("builders.util.nightvision")) {
-            if (p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
-                inv.setItem(5, GREEN_GLASS_PANE);
-                inv.setItem(14, i.create(Material.EYE_OF_ENDER, (short) 0, 1, "&6Nightvision", "&a&lEnabled__&7__&7Click to toggle"));
-                inv.setItem(23, GREEN_GLASS_PANE);
-            } else {
-                inv.setItem(5, RED_GLASS_PANE);
-                inv.setItem(14, i.create(Material.EYE_OF_ENDER, (short) 0, 1, "&6Nightvision", "&c&lDisabled__&7__&7Click to toggle"));
-                inv.setItem(23, RED_GLASS_PANE);
-            }
+            setToggleItem(inv, 5, Material.EYE_OF_ENDER, "night-vision", p.hasPotionEffect(PotionEffectType.NIGHT_VISION));
         } else {
-            inv.setItem(5, ORANGE_GLASS_PANE);
-            inv.setItem(14, i.create(Material.EYE_OF_ENDER, (short) 0, 1, "&6Nightvision", "&c&lNo permission"));
-            inv.setItem(23, ORANGE_GLASS_PANE);
+            setItem(inv, 5, Material.EYE_OF_ENDER, ORANGE_GLASS_PANE, "no-permission", "night-vision", false);
         }
 
         if (p.hasPermission("builders.util.noclip")) {
-            if (NoClipManager.noClipPlayerNames.contains(p.getName())) {
-                inv.setItem(6, GREEN_GLASS_PANE);
-                inv.setItem(15, i.create(Material.COMPASS, (short) 0, 1, "&6NoClip", "&a&lEnabled__&7__&7Click to toggle"));
-                inv.setItem(24, GREEN_GLASS_PANE);
-            } else {
-                inv.setItem(6, RED_GLASS_PANE);
-                inv.setItem(15, i.create(Material.COMPASS, (short) 0, 1, "&6NoClip", "&c&lDisabled__&7__&7Click to toggle"));
-                inv.setItem(24, RED_GLASS_PANE);
-            }
+            setToggleItem(inv, 6, Material.COMPASS, "no-clip", plugin.getNoClipManager().isEnabled(p));
         } else {
-            inv.setItem(6, ORANGE_GLASS_PANE);
-            inv.setItem(15, i.create(Material.COMPASS, (short) 0, 1, "&6NoClip", "&c&lNo permission"));
-            inv.setItem(24, ORANGE_GLASS_PANE);
+            setItem(inv, 6, Material.COMPASS, ORANGE_GLASS_PANE, "no-permission", "no-clip", false);
         }
 
         if (p.hasPermission("builders.util.advancedfly")) {
-            if (com.buildersrefuge.utilities.listeners.PlayerMoveListener.enabledPlayers.contains(p.getName())) {
-                inv.setItem(7, GREEN_GLASS_PANE);
-                inv.setItem(16, i.create(Material.FEATHER, (short) 0, 1, "&6Advanced Fly", "&a&lEnabled__&7__&7Click to toggle"));
-                inv.setItem(25, GREEN_GLASS_PANE);
-            } else {
-                inv.setItem(7, RED_GLASS_PANE);
-                inv.setItem(16, i.create(Material.FEATHER, (short) 0, 1, "&6Advanced Fly", "&c&lDisabled__&7__&7Click to toggle"));
-                inv.setItem(25, RED_GLASS_PANE);
-            }
+            setToggleItem(inv, 7, Material.FEATHER, "advanced-fly", plugin.getToggleManager().hasToggled(p, ToggleOption.ADVANCED_FLY));
         } else {
-            inv.setItem(7, ORANGE_GLASS_PANE);
-            inv.setItem(16, i.create(Material.FEATHER, (short) 0, 1, "&6Advanced Fly", "&c&lNo permission"));
-            inv.setItem(25, ORANGE_GLASS_PANE);
+            setItem(inv, 7, Material.FEATHER, ORANGE_GLASS_PANE, "no-permission", "advanced-fly", false);
         }
+    }
+
+    private void setToggleItem(Inventory inv, int slot, Material material, String option, boolean enabled) {
+        setItem(inv, slot, material, enabled ? GREEN_GLASS_PANE : RED_GLASS_PANE, "click", option, enabled);
+    }
+
+    private void setItem(Inventory inv, int slot, Material material, ItemStack border, String path, String option, boolean enabled) {
+        inv.setItem(slot, border);
+        inv.setItem(slot + 9, getItem(material, path, option, enabled));
+        inv.setItem(slot + 18, border);
+    }
+
+    private ItemStack getItem(Material mat, String path, String option, boolean enabled) {
+        return Items.create(mat, (short) 0, 1, plugin.getText("toggle." + path,
+                "option", plugin.getText("toggle.option." + option),
+                "status", plugin.getText("toggle.status." + (enabled ? "enabled" : "disabled"))));
     }
 }

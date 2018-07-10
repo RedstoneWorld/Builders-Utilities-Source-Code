@@ -2,6 +2,7 @@ package com.buildersrefuge.utilities.util;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -11,34 +12,39 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Items {
-    public Items() {
-    }
 
-    public ItemStack create(Material mat, short data, int amount, String name, String lore) {
+    public static ItemStack create(Material mat, short data, int amount, String... text) {
+        List<String> textList = new ArrayList<>();
+        for (String line1 : text) {
+            textList.addAll(Arrays.asList(line1.split("\\n|__")));
+        }
+
+        String name = textList.size() > 0 ? textList.get(0) : null;
+        List<String> loreList = textList.stream().skip(1)
+                .map(s -> ChatColor.translateAlternateColorCodes('&', s))
+                .collect(Collectors.toList());
+
         ItemStack is = new ItemStack(mat);
         is.setAmount(amount);
         ItemMeta meta = is.getItemMeta();
-        if (!lore.equals("")) {
-            String[] loreListArray = lore.split("__");
-            List<String> loreList = new ArrayList<>();
-            for (String s : loreListArray) {
-                loreList.add(s.replace("&", "§"));
-            }
+        if (!loreList.isEmpty()) {
             meta.setLore(loreList);
         }
-        if (!name.equals("")) {
-            meta.setDisplayName(name.replace("&", "§"));
+        if (name != null && !name.equals("")) {
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
         }
         is.setItemMeta(meta);
         is.setDurability(data);
         return is;
     }
 
-    public ItemStack color(ItemStack is, int r, int g, int b) {
+    public static ItemStack color(ItemStack is, int r, int g, int b) {
         LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
         Color c = Color.fromRGB(r, g, b);
         lam.setColor(c);
@@ -46,23 +52,8 @@ public class Items {
         return is;
     }
 
-    public ItemStack createHead(String data, int amount, String name, String lore) {
-        ItemStack item = new ItemStack(Material.SKULL_ITEM);
-        item.setDurability((short) 3);
-        item.setAmount(amount);
-        ItemMeta meta = item.getItemMeta();
-        if (!lore.equals("")) {
-            String[] loreListArray = lore.split("__");
-            List<String> loreList = new ArrayList<>();
-            for (String s : loreListArray) {
-                loreList.add(s.replace("&", "§"));
-            }
-            meta.setLore(loreList);
-        }
-        if (!name.equals("")) {
-            meta.setDisplayName(name.replace("&", "§"));
-        }
-        item.setItemMeta(meta);
+    public static ItemStack createHead(String data, int amount, String... text) {
+        ItemStack item = create(Material.SKULL_ITEM, (short) 3, amount, text);
         SkullMeta headMeta = (SkullMeta) item.getItemMeta();
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         profile.getProperties().put("textures", new Property("textures", data));
@@ -71,8 +62,7 @@ public class Items {
             profileField = headMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
             profileField.set(headMeta, profile);
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) {}
         item.setItemMeta(headMeta);
         return item;
     }

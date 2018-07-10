@@ -1,9 +1,8 @@
 package com.buildersrefuge.utilities.cmd;
 
 import com.buildersrefuge.utilities.Main;
-import com.buildersrefuge.utilities.object.NoClipManager;
-import com.buildersrefuge.utilities.util.ToggleGUI;
-import org.bukkit.GameMode;
+import com.buildersrefuge.utilities.managers.ToggleOption;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,8 +12,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CommandHandler implements Listener, CommandExecutor {
-    public static Main plugin;
-    public static String prefix = "§3buildersUtil> §b";
+    private final Main plugin;
 
     public CommandHandler(Main main) {
         plugin = main;
@@ -28,50 +26,50 @@ public class CommandHandler implements Listener, CommandExecutor {
         Player p = (Player) sender;
         StringBuilder s;
         switch (cmd.getName().toLowerCase()) {
-            case "nc":
-                if (p.hasPermission("builders.util.noclip")) {
-                    if (NoClipManager.noClipPlayerNames.contains(p.getName())) {
-                        NoClipManager.noClipPlayerNames.remove(p.getName());
-                        p.sendMessage(prefix + " NoClip §cDisabled");
-                        if (p.getGameMode() == GameMode.SPECTATOR) {
-                            p.setGameMode(GameMode.CREATIVE);
-                        }
+            case "builderutilities":
+                if (args.length == 0) {
+                    sender.sendMessage(plugin.getText("prefix") + " " + plugin.getDescription().getVersion());
+                } else if ("reload".equalsIgnoreCase(args[0])) {
+                    if (sender.hasPermission("builders.reload")) {
+                        plugin.reload();
+                        sender.sendMessage(ChatColor.GREEN + "Reloaded!");
                     } else {
-                        NoClipManager.noClipPlayerNames.add(p.getName());
-                        p.sendMessage(prefix + " NoClip §aEnabled");
+                        sender.sendMessage(plugin.getText("no-permission"));
                     }
                     return true;
                 }
-                break;
+                return true;
+            case "nc":
+                if (p.hasPermission("builders.util.noclip")) {
+                    sendText(p, "no-clip", plugin.getNoClipManager().toggle(p));
+                } else {
+                    sender.sendMessage(plugin.getText("no-permission"));
+                }
+                return true;
             case "n":
                 if (p.hasPermission("builders.util.nightvision")) {
                     if (p.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
                         p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-
-                        p.sendMessage(prefix + " NightVision §cDisabled");
+                        sendText(p, "night-vision", false);
                     } else {
                         p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, true, false));
-                        p.sendMessage(prefix + " NightVision §aEnabled");
+                        sendText(p, "night-vision", true);
                     }
-                    return true;
+                } else {
+                    sender.sendMessage(plugin.getText("no-permission"));
                 }
-                break;
+                return true;
             case "butil":
 
-                ToggleGUI gui = new ToggleGUI();
-                p.openInventory(gui.generateInv(p));
+                p.openInventory(plugin.getToggleGui().generateInv(p));
                 return true;
             case "af":
                 if (p.hasPermission("builders.util.advancedfly")) {
-                    if (com.buildersrefuge.utilities.listeners.PlayerMoveListener.togglePlayer(p)) {
-                        p.sendMessage(prefix + " Advanced Fly §aEnabled");
-                        return true;
-                    } else {
-                        p.sendMessage(prefix + " Advanced Fly §cDisabled");
-                        return true;
-                    }
+                    sendText(p, "advanced-fly", plugin.getToggleManager().toggle(p, ToggleOption.ADVANCED_FLY));
+                } else {
+                    sender.sendMessage(plugin.getText("no-permission"));
                 }
-                break;
+                return true;
             case "/1":
                 plugin.getServer().dispatchCommand(p, "/pos1");
                 return true;
@@ -135,7 +133,7 @@ public class CommandHandler implements Listener, CommandExecutor {
                     try {
                         degrees = Integer.parseInt(args[1]);
                     } catch (Exception e) {
-                        p.sendMessage(prefix + "§c //derot [axis] [degrees]");
+                        sendUsage(p, "//derot [axis] [degrees]");
                         return true;
                     }
                     float radian = (float) (((float) degrees / (float) 360) * 2 * Math.PI);
@@ -146,11 +144,11 @@ public class CommandHandler implements Listener, CommandExecutor {
                     } else if (args[0].equalsIgnoreCase("z")) {
                         plugin.getServer().dispatchCommand(p, "/deform rotate(x,y," + radian + ")");
                     } else {
-                        p.sendMessage(prefix + "§c //derot [axis] [degrees]");
+                        sendUsage(p, "//derot [axis] [degrees]");
                     }
                     return true;
                 } else {
-                    p.sendMessage(prefix + "§c //derot [axis] [degrees]");
+                    sendUsage(p, "//derot [axis] [degrees]");
                     return true;
                 }
             case "/twist":
@@ -159,7 +157,7 @@ public class CommandHandler implements Listener, CommandExecutor {
                     try {
                         degrees = Integer.parseInt(args[1]);
                     } catch (Exception e) {
-                        p.sendMessage(prefix + "§c //twist [axis] [degrees]");
+                        sendUsage(p, "//twist [axis] [degrees]");
                         return true;
                     }
                     float radian = (float) (((float) degrees / (float) 360) * 2 * Math.PI);
@@ -170,11 +168,11 @@ public class CommandHandler implements Listener, CommandExecutor {
                     } else if (args[0].equalsIgnoreCase("z")) {
                         plugin.getServer().dispatchCommand(p, "/deform rotate(x,y," + radian / 2 + "*(z+1))");
                     } else {
-                        p.sendMessage(prefix + "§c //twist [axis] [degrees]");
+                        sendUsage(p, "//twist [axis] [degrees]");
                     }
                     return true;
                 } else {
-                    p.sendMessage(prefix + "§c //twist [axis] [degrees]");
+                    sendUsage(p, "//twist [axis] [degrees]");
                     return true;
                 }
             case "/scale":
@@ -183,13 +181,13 @@ public class CommandHandler implements Listener, CommandExecutor {
                     try {
                         size = Double.parseDouble(args[0]);
                     } catch (Exception e) {
-                        p.sendMessage(prefix + "§c //scale [size]");
+                        sendUsage(p, "//scale [size]");
                         return true;
                     }
                     plugin.getServer().dispatchCommand(p, "/deform x/=" + size + ";y/=" + size + ";z/=" + size);
                     return true;
                 } else {
-                    p.sendMessage(prefix + "§c //scale [size]");
+                    sendUsage(p, "//scale [size]");
                     return true;
                 }
             case "/ws":
@@ -214,6 +212,21 @@ public class CommandHandler implements Listener, CommandExecutor {
                 return true;
         }
         return false;
+    }
+
+    private void sendUsage(Player p, String usage) {
+        p.sendMessage(plugin.getText("command.usage",
+                "prefix", plugin.getText("prefix"),
+                "usage", usage
+        ));
+    }
+
+    private void sendText(Player p, String option, boolean enabled) {
+        p.sendMessage(plugin.getText("command.result",
+                "prefix", plugin.getText("prefix"),
+                "option", plugin.getText("command.option." + option),
+                "status", plugin.getText("command.status." + (enabled ? "enabled" : "disabled"))
+        ));
     }
 
 }

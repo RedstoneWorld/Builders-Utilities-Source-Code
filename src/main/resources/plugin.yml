@@ -2,6 +2,10 @@ name: BuildersUtilities
 main: com.buildersrefuge.utilities.Main
 version: 1.2.4
 commands:
+    builderutilities:
+        description: Main plugin command
+        aliases: [bu, builderutil]
+        usage: /<command> [reload]
     banner:
         description: opens banner creator
         aliases: bm

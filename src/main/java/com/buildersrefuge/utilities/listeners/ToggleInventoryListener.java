@@ -1,14 +1,14 @@
 package com.buildersrefuge.utilities.listeners;
 
 import com.buildersrefuge.utilities.Main;
-import com.buildersrefuge.utilities.object.NoClipManager;
-import com.buildersrefuge.utilities.util.ToggleGUI;
-import org.bukkit.GameMode;
+import com.buildersrefuge.utilities.managers.ToggleOption;
+import com.buildersrefuge.utilities.util.InventoryUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,45 +22,31 @@ public class ToggleInventoryListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        int slot;
-        String name;
-        try {
-            slot = e.getRawSlot();
-            name = e.getClickedInventory().getName();
-        } catch (Exception exc) {
+        int slot = InventoryUtil.getRawSlot(e);
+        Inventory inv = InventoryUtil.getClickedInventory(e);
+        if (slot == -1 || inv == null) {
             return;
         }
-        ToggleGUI gui = new ToggleGUI();
-        if (name.equals("§1Builders Utilities")) {
+        String name = inv.getName();
+
+        if (name.equals(plugin.getText("toggle.title"))) {
             e.setCancelled(true);
             switch (slot) {
                 case 1:
                 case 10:
                 case 19:
-                    if (Main.ironTrapdoorNames.contains(p.getName())) {
-                        Main.ironTrapdoorNames.remove(p.getName());
-                    } else {
-                        Main.ironTrapdoorNames.add(p.getName());
-                    }
+                    plugin.getToggleManager().toggle(p, ToggleOption.IRON_TRAPDOOR_DISABLED);
                     break;
                 case 2:
                 case 11:
                 case 20:
-                    if (Main.slabNames.contains(p.getName())) {
-                        Main.slabNames.remove(p.getName());
-                    } else {
-                        Main.slabNames.add(p.getName());
-                    }
+                    plugin.getToggleManager().toggle(p, ToggleOption.SLAB_BREAKING_DISABLED);
                     break;
                 case 3:
                 case 12:
                 case 21:
-                    if (Main.version.contains("v1_12")) {
-                        if (Main.terracottaNames.contains(p.getName())) {
-                            Main.terracottaNames.remove(p.getName());
-                        } else {
-                            Main.terracottaNames.add(p.getName());
-                        }
+                    if (plugin.getServerVersion().contains("v1_12")) {
+                        plugin.getToggleManager().toggle(p, ToggleOption.TERRACOTTA_ROTATING);
                     }
                     break;
                 case 5:
@@ -78,25 +64,18 @@ public class ToggleInventoryListener implements Listener {
                 case 15:
                 case 24:
                     if (p.hasPermission("builders.util.noclip")) {
-                        if (NoClipManager.noClipPlayerNames.contains(p.getName())) {
-                            NoClipManager.noClipPlayerNames.remove(p.getName());
-                            if (p.getGameMode() == GameMode.SPECTATOR) {
-                                p.setGameMode(GameMode.CREATIVE);
-                            }
-                        } else {
-                            NoClipManager.noClipPlayerNames.add(p.getName());
-                        }
+                        plugin.getNoClipManager().toggle(p);
                     }
                     break;
                 case 7:
                 case 16:
                 case 25:
                     if (p.hasPermission("builders.util.advancedfly")) {
-                        PlayerMoveListener.togglePlayer(p);
+                        plugin.getToggleManager().toggle(p, ToggleOption.ADVANCED_FLY);
                     }
                     break;
             }
-            gui.updateInv(e.getClickedInventory(), p);
+            plugin.getToggleGui().updateInv(inv, p);
         }
     }
 }
