@@ -25,9 +25,12 @@ public class ColorGUI {
         inv.setItem(22, Items.createHead(plugin.getTexture("randomise.red"), 1, plugin.getText("armor-color.randomize")));
         inv.setItem(23, Items.createHead(plugin.getTexture("randomise.green"), 1, plugin.getText("armor-color.randomize")));
         inv.setItem(24, Items.createHead(plugin.getTexture("randomise.blue"), 1, plugin.getText("armor-color.randomize")));
-        inv.setItem(31, Items.createHead(plugin.getTexture("colors.red"), 10, plugin.getText("armor-color.color", "color", ChatColor.RED + "Red")));
-        inv.setItem(32, Items.createHead(plugin.getTexture("colors.green"), 10, plugin.getText("armor-color.color", "color", ChatColor.GREEN + "Green")));
-        inv.setItem(33, Items.createHead(plugin.getTexture("colors.blue"), 10, plugin.getText("armor-color.color", "color", ChatColor.BLUE + "Blue")));
+        inv.setItem(31, Items.createHead(plugin.getTexture("colors.red"), 10,
+                plugin.getText("armor-color.color.text", "color", plugin.getText("armor-color.color.red"))));
+        inv.setItem(32, Items.createHead(plugin.getTexture("colors.green"), 10,
+                plugin.getText("armor-color.color.text", "color", plugin.getText("armor-color.color.green"))));
+        inv.setItem(33, Items.createHead(plugin.getTexture("colors.blue"), 10,
+                plugin.getText("armor-color.color.text", "color", plugin.getText("armor-color.color.blue"))));
         updateInv(inv);
         return inv;
     }

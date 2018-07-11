@@ -41,7 +41,7 @@ public class ColorInventoryListener implements Listener {
             } else if (slot >= 31 && slot <= 33) { //colors
                 ItemStack item = e.getCurrentItem();
                 if (e.getClick() == ClickType.LEFT && item.getAmount() < 20) {
-                    item.setAmount(item.getAmount() + 5);
+                    item.setAmount(item.getAmount() + 1);
                 } else if (e.getClick() == ClickType.RIGHT && item.getAmount() > 1) {
                     item.setAmount(item.getAmount() - 1);
                 } else if (e.getClick() == ClickType.SHIFT_LEFT) { 

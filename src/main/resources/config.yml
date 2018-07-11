@@ -85,12 +85,16 @@ messages:
     chestplate: "&aClick to get chestplate"
     leggings: "&aClick to get leggings"
     boots:  "&aClick to get boots"
-    color: |-
-      %color%
+    color:
+      red: "&cRed"
+      green: "&aGreen"
+      blue: "&9Blue"
+      text: |-
+        %color%
 
-      &7Left click to increase
-      &7Right click to decrease
-      &7Shift click to change by 5
+        &7Left click to increase
+        &7Right click to decrease
+        &7Shift click to change by 5
   secret-blocks:
     title: "&1Secret Blocks"
 
