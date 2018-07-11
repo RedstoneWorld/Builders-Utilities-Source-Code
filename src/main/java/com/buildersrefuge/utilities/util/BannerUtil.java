@@ -35,7 +35,7 @@ public class BannerUtil {
 
     public static ItemStack addPattern(ItemStack i, Pattern pat) {
         ItemMeta meta = i.getItemMeta();
-        if (i instanceof BannerMeta) {
+        if (meta instanceof BannerMeta) {
             BannerMeta bannerMeta = (BannerMeta) meta;
             List<Pattern> patterns = bannerMeta.getPatterns();
             patterns.add(pat);
