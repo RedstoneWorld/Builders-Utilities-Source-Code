@@ -54,7 +54,9 @@ public class SecretBlockGUI {
         inv.setItem(20, Items.create(Material.DRAGON_EGG, (short) 0, 1, plugin.getText("secret-blocks.dragon-egg")));
         if (!plugin.getServerVersion().contains("v1_8")) {
             inv.setItem(21, Items.create(Material.GRASS_PATH, (short) 0, 1, plugin.getText("secret-blocks.grass-path")));
-            inv.setItem(22, Items.createHead(endGatewayB64, 1, plugin.getText("secret-blocks.end-gateway")));
+            if (!plugin.getConfig().getBoolean("remove-end-gate-from-blocks")){
+                inv.setItem(22, Items.createHead(endGatewayB64, 1, plugin.getText("secret-blocks.end-gateway")));
+            }
         }
         return inv;
     }

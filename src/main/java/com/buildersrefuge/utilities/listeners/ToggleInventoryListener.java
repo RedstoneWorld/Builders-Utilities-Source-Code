@@ -29,7 +29,7 @@ public class ToggleInventoryListener implements Listener {
         }
         String name = inv.getName();
 
-        if (name.equals(plugin.getText("toggle.title"))) {
+        if (name.equals(plugin.getText("toggle.title")) || e.getInventory().getName().contains(plugin.getText("toggle.title"))) {
             e.setCancelled(true);
             switch (slot) {
                 case 1:

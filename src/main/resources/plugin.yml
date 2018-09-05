@@ -1,6 +1,7 @@
 name: BuildersUtilities
 main: com.buildersrefuge.utilities.Main
-version: 1.2.4
+version: "${bukkit.plugin.version}"
+author: Arcaniax
 commands:
     builderutilities:
         description: Main plugin command

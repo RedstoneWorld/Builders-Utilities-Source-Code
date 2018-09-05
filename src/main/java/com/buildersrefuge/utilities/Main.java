@@ -12,6 +12,7 @@ import com.buildersrefuge.utilities.util.ColorGUI;
 import com.buildersrefuge.utilities.util.SecretBlockGUI;
 import com.buildersrefuge.utilities.util.ToggleGUI;
 import org.bukkit.ChatColor;
+import com.massivestats.MassiveStats;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -80,6 +81,8 @@ public class Main extends JavaPlugin implements Listener {
         getCommand("/scale").setExecutor(commandHandler);
         getCommand("/twist").setExecutor(commandHandler);
         getCommand("butil").setExecutor(commandHandler);
+
+        new MassiveStats(this);
 
         bannerGui = new BannerGUI(this);
         colorGui = new ColorGUI(this);
